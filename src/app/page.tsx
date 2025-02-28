@@ -1,67 +1,100 @@
-"use client"
+"use client";
 
-import { useState, useEffect, useCallback, type ChangeEvent } from "react"
-import { Input } from "@/src/components/ui/input"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/src/components/ui/dialog"
-import { Loader2, Star } from "lucide-react"
-import { MovieCard } from "@/src/components/movie-card"
-import { ReviewForm } from "@/src/components/review-form"
-import { searchMovies, getMovieDetails } from "@/src/lib/tmdb"
-import type { Movie, Review } from "@/types"
-import { ThemeToggle } from "@/src/components/theme-toggle"
+import { useState, useEffect, useCallback, type ChangeEvent } from "react";
+import { Input } from "@/src/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/src/components/ui/dialog";
+import { Loader2, Star } from "lucide-react";
+import { MovieCard } from "@/src/components/movie-card";
+import { ReviewForm } from "@/src/components/review-form";
+import { searchMovies, getMovieDetails } from "@/src/lib/tmdb";
+import type { Movie, Review } from "@/types";
+import { ThemeToggle } from "@/src/components/theme-toggle";
 import { debounce } from "lodash";
 
-
 const getImageUrl = (path: string | null): string | null => {
-  if (!path) return null
-  return `https://image.tmdb.org/t/p/w500${path}`
-}
+  if (!path) return null;
+  return `https://image.tmdb.org/t/p/w500${path}`;
+};
+
+const fetchLatestMovies = async () => {
+  const response = await fetch(
+    `https://api.themoviedb.org/3/movie/now_playing?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`
+  );
+  const data = await response.json();
+  return data.results;
+};
+
+const fetchMovieReviews = async (movieId: number) => {
+  const response = await fetch(
+    `https://api.themoviedb.org/3/movie/${movieId}/reviews?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`
+  );
+  const data = await response.json();
+  return data.results;
+};
 
 export default function Home() {
-  const [searchQuery, setSearchQuery] = useState("")
-  const [movies, setMovies] = useState<Movie[]>([])
-  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null)
-  const [reviews, setReviews] = useState<Review[]>([])
-  const [isLoading, setIsLoading] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("");
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Debounced search function for real-time results
   const debouncedSearch = useCallback(
     debounce(async (query: string) => {
       if (query.trim().length < 2) {
-        setMovies([])
-        return
+        setMovies([]);
+        return;
       }
-      setIsLoading(true)
+      setIsLoading(true);
       try {
-        const results = await searchMovies(query)
-        setMovies(results)
+        const results = await searchMovies(query);
+        setMovies(results);
       } catch (error) {
-        console.error("Error fetching movies:", error)
+        console.error("Error fetching movies:", error);
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
     }, 300),
-    [],
-  )
+    []
+  );
 
   useEffect(() => {
-    debouncedSearch(searchQuery)
+    debouncedSearch(searchQuery);
     return () => {
-      debouncedSearch.cancel()
-    }
-  }, [searchQuery, debouncedSearch])
+      debouncedSearch.cancel();
+    };
+  }, [searchQuery, debouncedSearch]);
+
+  // Fetch latest movies and reviews periodically
+  useEffect(() => {
+    const fetchData = async () => {
+      const latestMovies = await fetchLatestMovies();
+      setMovies(latestMovies);
+
+      if (latestMovies.length > 0) {
+        const movieReviews = await fetchMovieReviews(latestMovies[0].id);
+        setReviews(movieReviews);
+      }
+    };
+
+    fetchData(); // Fetch data immediately
+    const interval = setInterval(fetchData, 5 * 60 * 1000); // Fetch every 5 minutes
+
+    return () => clearInterval(interval); // Cleanup interval on unmount
+  }, []);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value)
-  }
+    setSearchQuery(e.target.value);
+  };
 
   const handleMovieClick = async (movie: Movie) => {
-    const details = await getMovieDetails(movie.id)
-    setSelectedMovie({ ...movie, ...details })
-  }
+    const details = await getMovieDetails(movie.id);
+    setSelectedMovie({ ...movie, ...details });
+  };
 
   const handleReviewSubmit = (review: { rating: number; comment: string }) => {
-    if (!selectedMovie) return
+    if (!selectedMovie) return;
 
     const newReview: Review = {
       id: Date.now().toString(),
@@ -70,10 +103,10 @@ export default function Home() {
       comment: review.comment,
       author: "Anonymous",
       createdAt: new Date().toISOString(),
-    }
+    };
 
-    setReviews([newReview, ...reviews])
-  }
+    setReviews([newReview, ...reviews]);
+  };
 
   return (
     <main className="min-h-screen">
@@ -102,13 +135,24 @@ export default function Home() {
               className="w-full pl-12 pr-12 py-6 text-lg"
             />
             <div className="absolute left-3 top-1/2 -translate-y-1/2">
-              <svg className="w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-4.35-4.35m1.35-5.65a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+              <svg
+                className="w-5 h-5 text-muted-foreground"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M21 21l-4.35-4.35m1.35-5.65a7 7 0 11-14 0 7 7 0 0114 0z"
+                ></path>
               </svg>
             </div>
             {isLoading && (
               <div className="absolute right-3 top-1/2 -translate-y-1/2">
-          <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+                <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
               </div>
             )}
           </div>
@@ -197,6 +241,5 @@ export default function Home() {
         )}
       </Dialog>
     </main>
-  )
+  );
 }
-
