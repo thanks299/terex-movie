@@ -89,7 +89,7 @@ export default function Home() {
         </h1>
 
         <h3 className="text-center text-muted-foreground mb-8 px-4 max-w-2xl">
-          Discover and explore your favorite movies. Start typing to see instant results.
+          Discover and explore your favorite movies. Search for any movie to see its details and set reviews.
         </h3>
 
         <div className="w-full max-w-2xl px-4 relative">
