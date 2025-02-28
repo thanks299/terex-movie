@@ -1,36 +1,89 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Terex Movie Website
 
-## Getting Started
+Terex Movie is a web application built with Next.js that provides an interactive platform to explore and discover movies. It fetches movie data from an external API and presents it in a user-friendly interface.
 
-First, run the development server:
+Features
 
-```bash
+Browse a collection of popular movies
+
+View detailed information about each movie
+
+Responsive design for desktop and mobile devices
+
+Fast navigation with Next.js static generation
+
+Technologies Used
+
+Frontend: Next.js, React
+
+Styling: Tailwind CSS
+
+API: External movie database API
+
+Getting Started
+
+Prerequisites
+
+Make sure you have the following installed:
+
+Node.js (v18 or later)
+
+npm or yarn
+
+Installation
+
+Clone the repository:
+
+git clone https://github.com/thanks299/terex-movie.git
+
+Navigate to the project directory:
+
+cd terex-movie
+
+Install dependencies:
+
+npm install
+# or
+yarn install
+
+Development Server
+
+To start the development server:
+
 npm run dev
 # or
 yarn dev
+
+The site will be available at http://localhost:3000
+
+Build and Deployment
+
+To build the project for production:
+
+npm run build
 # or
-pnpm dev
-# or
-bun dev
-```
+yarn build
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The optimized production build will be generated in the build/ directory.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+For deployment on Netlify, ensure the following settings:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Build command: npm run build
 
-## Learn More
+Publish directory: out
 
-To learn more about Next.js, take a look at the following resources:
+Environment Variables
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Create a .env.local file in the root directory and add:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+API_KEY=your_api_key_here
+API_URL=https://api.themoviedb.org/3
 
-## Deploy on Vercel
+Contributing
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+We welcome contributions! Please fork the repository and create a pull request with your changes.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+License
+
+This project is licensed under the MIT License.
+
