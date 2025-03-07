@@ -1,0 +1,87 @@
+export interface MovieMetadata {
+  id: string
+  title: string
+  originalTitle?: string
+  overview?: string
+  tagline?: string
+  posterUrl?: string
+  backdropUrl?: string
+  releaseDate?: string
+  runtime?: number
+  genres?: string[]
+  rating?: number
+  voteCount?: number
+  director?: string
+  writers?: string[]
+  cast?: CastMember[]
+  crew?: CrewMember[]
+  productionCompanies?: string[]
+  budget?: number
+  revenue?: number
+  languages?: string[]
+  keywords?: string[]
+  videos?: VideoInfo[]
+  similar?: BasicMovieInfo[]
+  externalIds?: ExternalIds
+  source?: string
+}
+
+export interface CastMember {
+  id: string
+  name: string
+  character?: string
+  profileUrl?: string
+}
+
+export interface CrewMember {
+  id: string
+  name: string
+  job?: string
+  department?: string
+  profileUrl?: string
+}
+
+export interface VideoInfo {
+  id: string
+  key: string
+  site: string
+  type: string
+  name: string
+  size?: number
+  official?: boolean
+  publishedAt?: string
+}
+
+export interface BasicMovieInfo {
+  id: string
+  title: string
+  posterUrl?: string
+  releaseDate?: string
+  rating?: number
+  mediaType?: "movie" | "tv" // Add this line
+}
+
+export interface ExternalIds {
+  imdb?: string
+  tmdb?: number
+  omdb?: string
+  wikidata?: string
+  movieLens?: string
+}
+
+export interface MetadataFetchOptions {
+  includeVideos?: boolean
+  includeCast?: boolean
+  includeCrew?: boolean
+  includeSimilar?: boolean
+  language?: string
+}
+
+export interface MetadataSource {
+  name: string
+  priority: number
+  getMovieMetadata: (id: string | number, options?: MetadataFetchOptions) => Promise<MovieMetadata | null>
+  searchMovies: (query: string) => Promise<BasicMovieInfo[]>
+  isAvailable: () => Promise<boolean>
+}
+
